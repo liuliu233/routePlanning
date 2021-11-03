@@ -1,0 +1,18 @@
+[
+  {
+    "id": "region1",
+    "label": "巡检区域1"
+  },
+  {
+    "id": "region2",
+    "label": "巡检区域2"
+  },
+  {
+    "id": "region3",
+    "label": "巡检区域3"
+  },
+  {
+    "id": "region4",
+    "label": "巡检区域4"
+  }
+]

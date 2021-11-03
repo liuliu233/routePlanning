@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "EPSG:4326"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "GeometryCollection",
+        "geometries": [
+          {
+            "type": "LineString",
+            "coordinates": [
+              [
+                119.952999, 33.087222
+              ],
+              [
+                119.954084, 33.079384
+              ],
+              [
+                119.942652, 33.062344
+              ],
+              [
+                119.95184, 33.069466
+              ]
+            ]
+          },
+          {
+            "type": "MultiPoint",
+            "coordinates": [
+              [
+                119.952999, 33.087222
+              ],
+              [
+                119.954084, 33.079384
+              ],
+              [
+                119.942652, 33.062344
+              ],
+              [
+                119.95184, 33.069466
+              ]
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

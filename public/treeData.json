@@ -1,0 +1,39 @@
+[{
+  "label": "第一天",
+  "children": [{
+    "label": "工作人员 A",
+    "children": [{
+      "label": "巡检航迹 1"
+    }]
+  }]
+},
+{
+  "label": "第二天",
+  "children": [{
+    "label": "工作人员 A",
+    "children": [{
+      "label": "巡检航迹 1"
+    }]
+  },
+  {
+    "label": "工作人员 B",
+    "children": [{
+      "label": "巡检航迹 1"
+    }]
+  }]
+},
+{
+  "label": "第三天",
+  "children": [{
+    "label": "工作人员 A",
+    "children": [{
+      "label": "巡检航迹 1"
+    }]
+  },
+  {
+    "label": "工作人员 B",
+    "children": [{
+      "label": "巡检航迹 1"
+    }]
+  }]
+}]
