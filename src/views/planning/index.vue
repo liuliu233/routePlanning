@@ -307,6 +307,7 @@ export default {
     createTask () {
       // eslint-disable-next-line no-unused-vars
       this.$refs.mapview.visualizePlannedRoute()
+      this.$store.dispatch('app/updateProjectInfo', { name: this.formData.taskName, director: this.formData.principal })
       // this.$refs.mapview.animate([120.09096831702661, 33.04075157629398], 13, 500)
     },
     // 更新

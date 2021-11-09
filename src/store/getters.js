@@ -6,6 +6,7 @@ const getters = {
   refresh_token: state => state.user.refresh_token,
   userInfo: state => state.user.userInfo,
   planning: state => state.app.planning,
+  projectInfo: state => state.app.projectInfo,
   manage: state => state.app.manage
 }
 

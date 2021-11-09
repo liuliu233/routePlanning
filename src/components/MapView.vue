@@ -73,6 +73,41 @@
         <el-button size="mini" style="background: #1d848b" type="primary" @click="handleSaveRegionInfo">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="任务配置结果" :visible.sync="assignmentVisible">
+      <el-form :inline="true" :model="configData">
+        <el-form-item label="任务名称:" style="width: 45%" :disabled="true">
+          {{getName}}
+        </el-form-item>
+        <el-form-item label="负责人:" style="width: 45%" :disabled="true">
+          {{getDirector}}
+        </el-form-item>
+        <el-form-item label="杆塔数量:" style="width: 30%">
+          {{configData.pointsNum}}
+        </el-form-item>
+        <el-form-item label="航迹条数:" style="width: 30%">
+          {{configData.routesNum}}
+        </el-form-item>
+        <el-form-item label="起飞点总数:" style="width: 30%">
+          {{configData.departsNum}}
+        </el-form-item>
+      </el-form>
+      <el-form :inline="true">
+        <el-form-item label="可投入工作组数量:">
+          <el-input v-model="configData.groupsNum"></el-input>
+        </el-form-item>
+        <el-form-item label="每组配备电池数量:">
+          <el-input v-model="configData.batteriesNum"></el-input>
+        </el-form-item>
+        <el-form-item label="工作时间/天:">
+          {{workDays}}
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="assignmentVisible = false">取 消</el-button>
+        <el-button type="primary" @click="onConfigConfirm">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -190,6 +225,16 @@ export default {
   },
   data () {
     return {
+      assignmentVisible: false,
+      dialogFormVisible: false,
+      configData: {
+        pointsNum: 7000,
+        routesNum: 800,
+        departsNum: 100,
+        groupsNum: 14,
+        batteriesNum: 15
+      },
+      routes: null,
       isImgGroup: false,
       hBarItem: '',
       popupContent: '未知',
@@ -270,11 +315,64 @@ export default {
   computed: {
     isRPanel () {
       return this.$store.getters.planning.rightPanel
+    },
+    getName () {
+      return this.$store.getters.projectInfo.name
+    },
+    getDirector () {
+      return this.$store.getters.projectInfo.director
+    },
+    workDays () {
+      let res = Math.ceil(this.configData.routesNum / (this.configData.batteriesNum * this.configData.groupsNum))
+      if (!res || res === Infinity) {
+        res = '--'
+      }
+      return res
     }
   },
   watch: {
   },
   methods: {
+    onConfigConfirm () {
+      // this.assignmentVisible = false
+      // this.taskData = []
+      // // const groupsNum = Math.ceil(this.configData.routesNum / this.configData.batteriesNum)
+      // const groupsNum = 54
+      // const groupsPerDay = this.configData.groupsNum
+      // const remain = groupsNum - groupsPerDay * (this.workDays - 1)
+      // console.log(groupsNum)
+      // console.log(groupsPerDay)
+      // console.log(remain)
+      // console.log(this.routes)
+      // for (let i = 0; i < this.workDays - 1; i++) {
+      //   const children = []
+      //   for (let j = 0; j < groupsPerDay; j++) {
+      //     const index = i * groupsPerDay + j
+      //     children.push({
+      //       id: (this.routes[index].values_.taskID),
+      //       label: '工作人员 ' + (this.routes[index].values_.taskID)
+      //     })
+      //   }
+      //   const obj = {
+      //     label: '第' + (i + 1) + '天',
+      //     children: children
+      //   }
+      //   this.taskData.push(obj)
+      // }
+      // const children = []
+      // for (let j = 0; j < remain; j++) {
+      //   const index = (this.workDays - 1) * groupsPerDay + j
+      //   children.push({
+      //     id: (this.routes[index].values_.taskID),
+      //     label: '工作人员 ' + (this.routes[index].values_.taskID)
+      //   })
+      // }
+      // const obj = {
+      //   label: '第' + (this.workDays) + '天',
+      //   children: children
+      // }
+      // this.taskData.push(obj)
+    },
     initMap () {
       for (let i = 0; i < 120; i++) {
         let hex = Math.floor(Math.random() * 16777216).toString(16)
@@ -824,7 +922,6 @@ export default {
           const arrowCoord = geometry.getCoordinateAt(i * 1.0 / arrowNum)
           const d = i * geoStep
           const grid = distances.findIndex(x => x <= d)
-          console.log(arrowCoord)
 
           styles.push(
             new Style({
@@ -1112,14 +1209,14 @@ export default {
       })
 
       axios.get('20211102130353018.json').then(res => {
-        const routes = routeSource.getFormat().readFeatures(res.data[0])
-        for (let i = 0; i < routes.length; i++) {
+        this.routes = routeSource.getFormat().readFeatures(res.data[0])
+        for (let i = 0; i < this.routes.length; i++) {
           if (globalStyle) {
-            routes[i].setStyle(this.styleFunction(routes[i]))
+            this.routes[i].setStyle(this.styleFunction(this.routes[i]))
           }
-          routeSource.addFeature(routes[i])
+          routeSource.addFeature(this.routes[i])
         }
-        this.animate(routes[0].getGeometry().getGeometries()[0].getCoordinates()[0],
+        this.animate(this.routes[0].getGeometry().getGeometries()[0].getCoordinates()[0],
           13,
           500)
         const towerPoints = towerSource.getFormat().readFeatures(res.data[1])
@@ -1127,17 +1224,17 @@ export default {
         const takeOffPoints = takeOffSource.getFormat().readFeatures(res.data[2])
         takeOffSource.addFeatures(takeOffPoints)
 
-        for (let i = 0; i < routes.length; i++) {
+        for (let i = 0; i < this.routes.length; i++) {
           this.taskData[0].children.push({
-            id: (routes[i].values_.taskID),
-            label: '工作人员 ' + (routes[i].values_.taskID)
+            id: (this.routes[i].values_.taskID),
+            label: '工作人员 ' + (this.routes[i].values_.taskID)
           })
         }
-
         // 成功回调函数停止加载
         // 延时器
         setTimeout(() => {
           loading.close()
+          this.assignmentVisible = true
         }, 2000)
       }).catch(error => console.log(error))
       routeLayer.setSource(routeSource)
@@ -1255,7 +1352,6 @@ export default {
             }
             this.currentFeatures.id = data.id
             this.currentFeatures.geometry = [].concat(pointFeature.getGeometry().getGeometries()[0].getCoordinates())
-            console.log(this.currentFeatures.geometry)
             this.currentFeatures.lineStyle = lineFeature.getStyle()
             this.currentFeatures.pointStyle = pointFeature.getStyle()
 
@@ -1285,7 +1381,6 @@ export default {
               this.getFeatureById(routeLayer, this.currentFeatures.id).setStyle(this.currentFeatures.lineStyle)
             }
             this.currentFeatures.id = data.id
-            console.log(this.currentFeatures.geometry)
             this.currentFeatures.lineStyle = lineFeature.getStyle()
 
             lineFeature.setStyle(new Style({
@@ -1362,7 +1457,6 @@ export default {
               rotation = dy < 0 ? rotation : (Math.PI + rotation)
 
               const pos = new Point(currentCoordinate)
-              console.log(pos)
               const myImage = new Image(200, 200)
               myImage.src = require('../assets/images/lg/drone.png')
               vectorContext.setStyle(new Style({
@@ -1421,7 +1515,6 @@ export default {
           key: this.$store.getters.amapKey
         }
       }).then(res => {
-        console.log(res.data)
         const routes = res.data.route.paths[0]
         const steps = routes.steps
         const totalLineData = []

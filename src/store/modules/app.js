@@ -15,6 +15,12 @@ const state = {
   manage: {
     extend: false
   },
+  projectInfo: {
+    name: '',
+    director: '',
+    groupsNum: 14,
+    batteriesNum: 15
+  },
   // 高德web服务key
   amapKey: 'f598f196435d04778f65a24510c42132'
 }
@@ -47,6 +53,9 @@ const mutations = {
   },
   RETRACT_RIGHT_PANEL: state => {
     state.planning.rightPanel = !state.planning.rightPanel
+  },
+  PROJECT_INFO_UPDATE: (state, handle) => {
+    state.projectInfo = handle
   }
 }
 
@@ -71,6 +80,9 @@ const actions = {
   },
   retractRightPanel ({ commit }) {
     commit('RETRACT_RIGHT_PANEL')
+  },
+  updateProjectInfo ({ commit }, handle) {
+    commit('PROJECT_INFO_UPDATE', handle)
   }
 }
 
